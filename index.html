@@ -172,6 +172,8 @@
             color: var(--muted);
         }
         #tabela{
+            grid-template-columns:" 1fr 1fr";
+            grid-template-areas: "item1 item2" "item3 item4";
             display: grid;
             height: 300px;
             width: 300px;
@@ -182,7 +184,55 @@
             margin-top: 50px;
             margin-bottom: 100px;
         }
+        
+        #item1{
 
+            background-image: url(brownie-a61d7xl1.jpg);
+            background-size: contain;
+            background-repeat: no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            grid-area: item1;
+            border-top-left-radius: 20px;
+        }
+        #item2{
+            background-image: url(brownie-de-chocolate\ \(1\).jpg);
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            grid-area: item2;
+            border-top-right-radius: 20px;
+        }
+        #item3{
+            background-image: url(PL_Thumb-1.png);
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            grid-area: item3;
+            border-bottom-left-radius: 20px;
+        }
+        #item4{
+            background-image: url(images.jpeg);
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            grid-area: item4;
+            border-bottom-right-radius: 20px;
+        }
         /* Floating action (big button) */
         .fab {
             position: fixed;
@@ -379,9 +429,10 @@
                     </article>
 
                     <div id="tabela">
-                        <div class="itens">
-
-                        </div>
+                        <div id="item1"></div>
+                        <div id="item2"></div>
+                        <div id="item3"></div>
+                        <div id="item4"></div>
                     </div>
 
                 </div>
