@@ -1,104 +1,333 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Tela Adaptada para Celular</title>
     <style>
-        :root{
-            --bg:#f6f7fb;
-            --card:#ffffff;
-            --accent:#0b84ff;
-            --muted:#6b7280;
-            --radius:14px;
-            --gap:14px;
+        :root {
+            /* Paleta enviada */
+            --p-cream: #FFFCF2;
+            --p-sand: #CCC5B9;
+            --p-stone: #403D39;
+            --p-char: #252422;
+            --p-orange: #EB5E28;
+
+            /* Mapeamento usado pela UI */
+            --bg: var(--p-cream);
+            --card: var(--p-sand);
+            --accent: var(--p-orange);
+            --muted: var(--p-stone);
+
+            --radius: 14px;
+            --gap: 14px;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
         }
 
-        html,body{height:100%;margin:0;background:var(--bg);-webkit-text-size-adjust:100%;}
-        body{
-            padding: env(safe-area-inset-top) 16px env(safe-area-inset-bottom);
-            color:#111; -webkit-font-smoothing:antialiased;
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            background: var(--bg);
+            -webkit-text-size-adjust: 100%;
         }
 
-        .app{
-            max-width:900px;margin:0 auto;
+        body {
+            padding: env(safe-area-inset-top) 16px env(safe-area-inset-bottom);
+            color: #111;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .app {
+            max-width: 900px;
+            margin: 0 auto;
         }
 
         /* Header */
-        header{
-            display:flex;align-items:center;gap:12px;margin:12px 0 18px;
+        header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 12px 0 18px;
         }
-        .brand{
-            display:flex;flex-direction:column;
+
+        .brand {
+            display: flex;
+            flex-direction: column;
         }
-        .title{font-size:18px;font-weight:700;line-height:1;}
-        .subtitle{font-size:12px;color:var(--muted);}
+
+        .title {
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .subtitle {
+            font-size: 12px;
+            color: var(--muted);
+        }
 
         /* Top bar controls */
-        .top-controls{margin-left:auto;display:flex;gap:8px;align-items:center;}
-        .btn{
-            background:var(--card);border:1px solid #e6e9ef;padding:8px 12px;border-radius:10px;
-            font-size:14px;color:var(--accent);min-width:44px;display:inline-flex;align-items:center;justify-content:center;
-            box-shadow:0 1px 0 rgba(0,0,0,0.02);
+        .top-controls {
+            margin-left: auto;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .btn {
+            background: var(--card);
+            border: 1px solid #e6e9ef;
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 14px;
+            color: var(--accent);
+            min-width: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02);
+            cursor: pointer;
         }
 
         /* Search / Hero */
-        .hero{
-            background:linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.8));
-            border-radius:var(--radius);padding:14px;margin-bottom:14px;display:flex;flex-direction:column;gap:10px;
-            box-shadow:0 6px 20px rgba(9,30,66,0.04), inset 0 1px 0 rgba(255,255,255,0.6);
+        .hero {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.8));
+            border-radius: var(--radius);
+            padding: 14px;
+            margin-bottom: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            box-shadow: 0 6px 20px rgba(9, 30, 66, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.6);
         }
-        .search{
-            display:flex;gap:8px;
+
+        .search {
+            display: flex;
+            gap: 8px;
         }
-        .search input{
-            flex:1;padding:12px;border-radius:10px;border:1px solid #e6e9ef;font-size:15px;
-            outline:none;background:#fff;
+
+        .search input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #e6e9ef;
+            font-size: 15px;
+            outline: none;
+            background: #fff;
         }
-        .search button{padding:12px 14px;border-radius:10px;border:none;background:var(--accent);color:#fff;font-weight:600;}
+
+        .search button {
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: none;
+            background: var(--accent);
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+        }
 
         /* Cards grid */
-        .grid{display:grid;grid-template-columns:1fr;gap:12px;}
-        .card{
-            background:var(--card);border-radius:12px;padding:12px;box-shadow:0 2px 12px rgba(16,24,40,0.04);
-            display:flex;gap:12px;align-items:center;
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
         }
-        .thumb{
-            width:64px;height:64px;border-radius:10px;background:linear-gradient(135deg,#dfeffd,#cfe8ff);flex:0 0 64px;
-            display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent);
+
+        .card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 12px;
+            box-shadow: 0 2px 12px rgba(16, 24, 40, 0.04);
+            display: flex;
+            gap: 12px;
+            align-items: center;
         }
-        .card .meta{flex:1;}
-        .card .meta .name{font-weight:700;margin-bottom:6px;}
-        .card .meta .desc{font-size:13px;color:var(--muted);}
+
+        .thumb {
+            width: 64px;
+            height: 64px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #dfeffd, #cfe8ff);
+            flex: 0 0 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .card .meta {
+            flex: 1;
+        }
+
+        .card .meta .name {
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .card .meta .desc {
+            font-size: 13px;
+            color: var(--muted);
+        }
+        #tabela{
+            display: grid;
+            height: 300px;
+            width: 300px;
+            background-color: gray;
+            box-shadow:#111 0px 2px 12px;
+            border-radius: 12px;
+            margin-left: 10%;
+            margin-top: 50px;
+            margin-bottom: 100px;
+        }
 
         /* Floating action (big button) */
-        .fab{
-            position:fixed;right:18px;bottom:18px;background:var(--accent);color:#fff;border-radius:999px;padding:14px 18px;
-            box-shadow:0 10px 30px rgba(11,132,255,0.18);font-weight:700;border:none;
+        .fab {
+            position: fixed;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: calc(18px + env(safe-area-inset-bottom));
+            background: var(--accent);
+            color: #fff;
+            border-radius: 999px;
+            padding: 10px;
+            box-shadow: 0 10px 30px rgba(11, 132, 255, 0.18);
+            font-weight: 700;
+            border: none;
+            width: min(92%, 420px);
+            display: flex;
+            gap: 10px;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 20;
+        }
+
+        .fab a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            padding: 8px 10px;
+            border-radius: 999px;
+            text-decoration: none;
+            gap: 6px;
+            flex-direction: column;
+            color: #fff;
+        }
+
+        .fab a img {
+            width: clamp(20px, 6vw, 28px);
+            height: auto;
+            display: block;
+            object-fit: contain;
+            margin: 0;
+            filter: none;
+            transition: box-shadow .18s, transform .18s, padding .18s;
+        }
+
+        .fab a .label {
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1;
+            color: #fff;
+            white-space: nowrap;
+            text-align: center;
+        }
+
+        /* manter destaque do ativo (bordinha branca no ícone) */
+        .fab a.active img {
+            border: 2px solid #fff;
+            border-radius: 999px;
+            padding: 4px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+            transform: translateY(-1px);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        /* Loading overlay */
+        .loading {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.35);
+            z-index: 60;
+            -webkit-backdrop-filter: blur(4px);
+            backdrop-filter: blur(4px);
+            padding: env(safe-area-inset-top) 16px env(safe-area-inset-bottom);
+        }
+
+        .loading.show {
+            display: flex;
+        }
+
+        .loading-card {
+            background: rgba(255, 255, 255, 0.96);
+            padding: 18px 22px;
+            border-radius: 12px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            box-shadow: 0 8px 30px rgba(16, 24, 40, 0.12);
+            max-width: 92%;
+            width: 380px;
+        }
+
+        .spinner {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 4px solid rgba(0, 0, 0, 0.08);
+            border-top-color: var(--accent);
+            animation: spin 1s linear infinite;
+            flex: 0 0 36px;
+        }
+
+        .loading-text {
+            font-weight: 700;
+            color: var(--p-char);
+            font-size: 15px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         /* Responsive: wider screens show two-column grid and bigger sizes */
-        @media (min-width:640px){
-            .grid{grid-template-columns:1fr 1fr;}
-            .title{font-size:20px;}
+        @media (min-width:640px) {
+            .grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .title {
+                font-size: 20px;
+            }
         }
 
         /* Accessibility: focus states */
-        button:focus, input:focus, a:focus{outline:3px solid rgba(11,132,255,0.12);outline-offset:2px;}
+        button:focus,
+        input:focus,
+        a:focus {
+            outline: 3px solid rgba(11, 132, 255, 0.12);
+            outline-offset: 2px;
+        }
     </style>
 </head>
+
 <body>
     <div class="app" role="application" aria-label="Aplicativo de exemplo">
         <header>
             <div class="brand">
-                <div class="title">Meu App</div>
-                <div class="subtitle">Tela adaptada para celular</div>
+                <div class="title">Brownies do Marcão</div>
+                <div class="subtitle">o melhor brownie da cidade</div>
             </div>
 
             <div class="top-controls" role="navigation" aria-label="Controles">
-                <button class="btn" aria-label="Notificações">🔔</button>
-                <button class="btn" aria-label="Perfil">👤</button>
             </div>
         </header>
 
@@ -107,7 +336,7 @@
                 <div id="search-title" style="font-weight:700;color:#0b1724;">Encontre rápido</div>
                 <div class="search" role="search">
                     <input type="search" placeholder="Buscar..." aria-label="Buscar conteúdo">
-                    <button aria-label="Pesquisar">Buscar</button>
+                    <button class="btn" aria-label="Pesquisar">Buscar</button>
                 </div>
             </section>
 
@@ -115,47 +344,135 @@
                 <h2 style="margin:0 0 10px;font-size:15px;">Sugestões</h2>
                 <div class="grid" id="list">
                     <article class="card">
-                        <div class="thumb">A</div>
+                        <div class="thumb">🍫</div>
                         <div class="meta">
-                            <div class="name">Item A</div>
-                            <div class="desc">Uma breve descrição do item A que cabe em uma linha.</div>
+                            <div class="name">Faça seu pedido</div>
+                            <div class="desc">Peça seu brownie favorito — escolha entrega ou retirada.</div>
                         </div>
-                        <button class="btn" aria-label="Abrir item A">Abrir</button>
+                        <button class="btn" aria-label="Faça seu pedido">Pedir</button>
                     </article>
 
                     <article class="card">
-                        <div class="thumb">B</div>
+                        <div class="thumb">ℹ️</div>
                         <div class="meta">
-                            <div class="name">Item B</div>
-                            <div class="desc">Descrição do item B com detalhe curto.</div>
+                            <div class="name">Sobre</div>
+                            <div class="desc">Saiba mais sobre os ingredientes e a história do Marcão.</div>
                         </div>
-                        <button class="btn" aria-label="Abrir item B">Abrir</button>
+                        <button class="btn" aria-label="Sobre">Ler</button>
                     </article>
 
                     <article class="card">
-                        <div class="thumb">C</div>
+                        <div class="thumb">✉️</div>
                         <div class="meta">
-                            <div class="name">Item C</div>
-                            <div class="desc">Outra sugestão para mostrar um layout responsivo.</div>
+                            <div class="name">Contato</div>
+                            <div class="desc">Fale conosco para dúvidas, encomendas e atendimento.</div>
                         </div>
-                        <button class="btn" aria-label="Abrir item C">Abrir</button>
+                        <button class="btn" aria-label="Contato">Falar</button>
                     </article>
+                    <article class="card">
+                        <div class="thumb">ℹ</div>
+                        <div class="meta">
+                            <div class="name">carrinho</div>
+                            <div class="desc">Olhe os itens do carrinho.</div>
+                        </div>
+                        <button class="btn" aria-label="Sobre">ver</button>
+                    </article>
+
+                    <div id="tabela">
+                        <div class="itens">
+
+                        </div>
+                    </div>
+
                 </div>
             </section>
         </main>
     </div>
 
-    <button class="fab" aria-label="Novo">+ Novo</button>
+    <div class="fab" role="navigation" aria-label="Menu rápido">
+        <a href="main.html" aria-label="Página inicial"><img src="casa.png" alt="Início"></a>
+        <a href="carrinho.html" aria-label="Carrinho"><img src="carrinho-carrinho.png" alt="Carrinho"></a>
+        <a href="chat.html" aria-label="Chat"><img src="balao-de-fala.png" alt="Chat"></a>
+    </div>
+
+    <!-- Loading overlay -->
+    <div id="loading" class="loading" role="status" aria-hidden="true" aria-live="polite">
+        <div class="loading-card" role="presentation">
+            <div class="spinner" aria-hidden="true"></div>
+            <div class="loading-text">Carregando...</div>
+        </div>
+    </div>
 
     <script>
-        // Comportamento simples: demonstrar resposta a toque
-        document.querySelectorAll('.card .btn').forEach(btn=>{
-            btn.addEventListener('click', e=>{
+        // Mostra/oculta a tela de loading
+        function showLoading() {
+            const el = document.getElementById('loading');
+            el.setAttribute('aria-hidden', 'false');
+            el.classList.add('show');
+            // bloqueia scroll enquanto aberto
+            document.documentElement.style.overflow = 'hidden';
+            document.body.style.overflow = 'hidden';
+        }
+        function hideLoading() {
+            const el = document.getElementById('loading');
+            el.setAttribute('aria-hidden', 'true');
+            el.classList.remove('show');
+            document.documentElement.style.overflow = '';
+            document.body.style.overflow = '';
+        }
+
+        // Botões das cards: mostra loading e mantém comportamento (mostra alert como antes)
+        document.querySelectorAll('.card .btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
                 const name = e.target.closest('.card').querySelector('.name').textContent;
-                alert(name + ' aberto');
+                showLoading();
+                // simula trabalho; depois esconde e executa ação (alert)
+                setTimeout(() => {
+                    hideLoading();
+                    alert(name + ' aberto');
+                }, 800);
             });
         });
-        document.querySelector('.fab').addEventListener('click', ()=> alert('Criar novo item'));
+
+        // Links do fab: mostra loading e navega após pequena pausa
+        document.querySelectorAll('.fab a').forEach(a => {
+            a.addEventListener('click', (e) => {
+                e.preventDefault();
+                const href = a.getAttribute('href');
+                showLoading();
+                // tempo curto para mostrar loading antes da navegação
+                setTimeout(() => {
+                    // navegar para o destino (mantém comportamento nativo)
+                    window.location.href = href;
+                }, 400);
+            });
+        });
+
+        // botão de busca também mostra loading
+        document.querySelectorAll('.search button, .search input').forEach(el => {
+            if (el.tagName === 'BUTTON') {
+                el.addEventListener('click', (e) => {
+                    showLoading();
+                    setTimeout(hideLoading, 700);
+                });
+            }
+            if (el.tagName === 'INPUT') {
+                // opcional: ao pressionar Enter no input
+                el.addEventListener('keydown', (ev) => {
+                    if (ev.key === 'Enter') {
+                        ev.preventDefault();
+                        showLoading();
+                        setTimeout(hideLoading, 700);
+                    }
+                });
+            }
+        });
+
+        // Esc para fechar loading manualmente (útil durante desenvolvimento)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') hideLoading();
+        });
     </script>
 </body>
+
 </html>
