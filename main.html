@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Tela Adaptada para Celular</title>
+    <style>
+        :root{
+            --bg:#f6f7fb;
+            --card:#ffffff;
+            --accent:#0b84ff;
+            --muted:#6b7280;
+            --radius:14px;
+            --gap:14px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+        }
+
+        html,body{height:100%;margin:0;background:var(--bg);-webkit-text-size-adjust:100%;}
+        body{
+            padding: env(safe-area-inset-top) 16px env(safe-area-inset-bottom);
+            color:#111; -webkit-font-smoothing:antialiased;
+        }
+
+        .app{
+            max-width:900px;margin:0 auto;
+        }
+
+        /* Header */
+        header{
+            display:flex;align-items:center;gap:12px;margin:12px 0 18px;
+        }
+        .brand{
+            display:flex;flex-direction:column;
+        }
+        .title{font-size:18px;font-weight:700;line-height:1;}
+        .subtitle{font-size:12px;color:var(--muted);}
+
+        /* Top bar controls */
+        .top-controls{margin-left:auto;display:flex;gap:8px;align-items:center;}
+        .btn{
+            background:var(--card);border:1px solid #e6e9ef;padding:8px 12px;border-radius:10px;
+            font-size:14px;color:var(--accent);min-width:44px;display:inline-flex;align-items:center;justify-content:center;
+            box-shadow:0 1px 0 rgba(0,0,0,0.02);
+        }
+
+        /* Search / Hero */
+        .hero{
+            background:linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.8));
+            border-radius:var(--radius);padding:14px;margin-bottom:14px;display:flex;flex-direction:column;gap:10px;
+            box-shadow:0 6px 20px rgba(9,30,66,0.04), inset 0 1px 0 rgba(255,255,255,0.6);
+        }
+        .search{
+            display:flex;gap:8px;
+        }
+        .search input{
+            flex:1;padding:12px;border-radius:10px;border:1px solid #e6e9ef;font-size:15px;
+            outline:none;background:#fff;
+        }
+        .search button{padding:12px 14px;border-radius:10px;border:none;background:var(--accent);color:#fff;font-weight:600;}
+
+        /* Cards grid */
+        .grid{display:grid;grid-template-columns:1fr;gap:12px;}
+        .card{
+            background:var(--card);border-radius:12px;padding:12px;box-shadow:0 2px 12px rgba(16,24,40,0.04);
+            display:flex;gap:12px;align-items:center;
+        }
+        .thumb{
+            width:64px;height:64px;border-radius:10px;background:linear-gradient(135deg,#dfeffd,#cfe8ff);flex:0 0 64px;
+            display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent);
+        }
+        .card .meta{flex:1;}
+        .card .meta .name{font-weight:700;margin-bottom:6px;}
+        .card .meta .desc{font-size:13px;color:var(--muted);}
+
+        /* Floating action (big button) */
+        .fab{
+            position:fixed;right:18px;bottom:18px;background:var(--accent);color:#fff;border-radius:999px;padding:14px 18px;
+            box-shadow:0 10px 30px rgba(11,132,255,0.18);font-weight:700;border:none;
+        }
+
+        /* Responsive: wider screens show two-column grid and bigger sizes */
+        @media (min-width:640px){
+            .grid{grid-template-columns:1fr 1fr;}
+            .title{font-size:20px;}
+        }
+
+        /* Accessibility: focus states */
+        button:focus, input:focus, a:focus{outline:3px solid rgba(11,132,255,0.12);outline-offset:2px;}
+    </style>
+</head>
+<body>
+    <div class="app" role="application" aria-label="Aplicativo de exemplo">
+        <header>
+            <div class="brand">
+                <div class="title">Meu App</div>
+                <div class="subtitle">Tela adaptada para celular</div>
+            </div>
+
+            <div class="top-controls" role="navigation" aria-label="Controles">
+                <button class="btn" aria-label="Notificações">🔔</button>
+                <button class="btn" aria-label="Perfil">👤</button>
+            </div>
+        </header>
+
+        <main>
+            <section class="hero" aria-labelledby="search-title">
+                <div id="search-title" style="font-weight:700;color:#0b1724;">Encontre rápido</div>
+                <div class="search" role="search">
+                    <input type="search" placeholder="Buscar..." aria-label="Buscar conteúdo">
+                    <button aria-label="Pesquisar">Buscar</button>
+                </div>
+            </section>
+
+            <section>
+                <h2 style="margin:0 0 10px;font-size:15px;">Sugestões</h2>
+                <div class="grid" id="list">
+                    <article class="card">
+                        <div class="thumb">A</div>
+                        <div class="meta">
+                            <div class="name">Item A</div>
+                            <div class="desc">Uma breve descrição do item A que cabe em uma linha.</div>
+                        </div>
+                        <button class="btn" aria-label="Abrir item A">Abrir</button>
+                    </article>
+
+                    <article class="card">
+                        <div class="thumb">B</div>
+                        <div class="meta">
+                            <div class="name">Item B</div>
+                            <div class="desc">Descrição do item B com detalhe curto.</div>
+                        </div>
+                        <button class="btn" aria-label="Abrir item B">Abrir</button>
+                    </article>
+
+                    <article class="card">
+                        <div class="thumb">C</div>
+                        <div class="meta">
+                            <div class="name">Item C</div>
+                            <div class="desc">Outra sugestão para mostrar um layout responsivo.</div>
+                        </div>
+                        <button class="btn" aria-label="Abrir item C">Abrir</button>
+                    </article>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <button class="fab" aria-label="Novo">+ Novo</button>
+
+    <script>
+        // Comportamento simples: demonstrar resposta a toque
+        document.querySelectorAll('.card .btn').forEach(btn=>{
+            btn.addEventListener('click', e=>{
+                const name = e.target.closest('.card').querySelector('.name').textContent;
+                alert(name + ' aberto');
+            });
+        });
+        document.querySelector('.fab').addEventListener('click', ()=> alert('Criar novo item'));
+    </script>
+</body>
+</html>
