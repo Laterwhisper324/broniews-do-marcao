@@ -171,6 +171,7 @@
             font-size: 13px;
             color: var(--muted);
         }
+
         #tabela{
             grid-template-columns:" 1fr 1fr";
             grid-template-areas: "item1 item2" "item3 item4";
@@ -186,7 +187,6 @@
         }
         
         #item1{
-
             background-image: url(brownie-a61d7xl1.jpg);
             background-size: contain;
             background-repeat: no-repeat;
@@ -233,122 +233,95 @@
             grid-area: item4;
             border-bottom-right-radius: 20px;
         }
+
         /* Floating action (big button) */
-        .fab {
+        .fab{
             position: fixed;
             left: 50%;
             transform: translateX(-50%);
             bottom: calc(18px + env(safe-area-inset-bottom));
-            background: var(--accent);
+            background: rgba(37,37,40,0.96); /* dark pill */
             color: #fff;
             border-radius: 999px;
-            padding: 10px;
-            box-shadow: 0 10px 30px rgba(11, 132, 255, 0.18);
+            padding: 6px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.35);
             font-weight: 700;
             border: none;
             width: min(92%, 420px);
             display: flex;
-            gap: 10px;
-            justify-content: space-around;
+            gap: 6px;
             align-items: center;
+            position: fixed;
             z-index: 20;
+            padding-left: 6px;
+            padding-right: 6px;
+        }
+
+        /* white moving pill behind active item */
+        .fab .active-indicator{
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            height: calc(100% - 12px);
+            width: 80px;
+            border-radius: 999px;
+            background: #fff;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.28);
+            transform: translateX(0);
+            transition: transform .26s cubic-bezier(.2,.9,.2,1), width .18s;
+            z-index: 1;
+            pointer-events: none;
         }
 
         .fab a {
+            position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
             flex: 1;
-            padding: 8px 10px;
+            padding: 10px 8px;
             border-radius: 999px;
             text-decoration: none;
             gap: 6px;
             flex-direction: column;
-            color: #fff;
+            color: #d6d6d8;
+            z-index: 2; /* above indicator */
+            transition: color .18s, transform .18s;
         }
 
         .fab a img {
-            width: clamp(20px, 6vw, 28px);
+            width: clamp(20px, 6vw, 24px);
             height: auto;
             display: block;
             object-fit: contain;
             margin: 0;
             filter: none;
             transition: box-shadow .18s, transform .18s, padding .18s;
+            z-index: 2;
         }
 
         .fab a .label {
             font-size: 12px;
             font-weight: 700;
             line-height: 1;
-            color: #fff;
+            color: inherit;
             white-space: nowrap;
             text-align: center;
+            z-index: 2;
+        }
+
+        /* active link styles (text + icon contrast on white pill) */
+        .fab a.active{
+            color: var(--p-char);
+            transform: translateY(-1px);
         }
 
         /* manter destaque do ativo (bordinha branca no ícone) */
         .fab a.active img {
-            border: 2px solid #fff;
-            border-radius: 999px;
-            padding: 4px;
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
-            transform: translateY(-1px);
-            background: rgba(255, 255, 255, 0.03);
+            
+            box-shadow: none;
         }
 
-        /* Loading overlay */
-        .loading {
-            position: fixed;
-            inset: 0;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            background: rgba(0, 0, 0, 0.35);
-            z-index: 60;
-            -webkit-backdrop-filter: blur(4px);
-            backdrop-filter: blur(4px);
-            padding: env(safe-area-inset-top) 16px env(safe-area-inset-bottom);
-        }
-
-        .loading.show {
-            display: flex;
-        }
-
-        .loading-card {
-            background: rgba(255, 255, 255, 0.96);
-            padding: 18px 22px;
-            border-radius: 12px;
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            box-shadow: 0 8px 30px rgba(16, 24, 40, 0.12);
-            max-width: 92%;
-            width: 380px;
-        }
-
-        .spinner {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border: 4px solid rgba(0, 0, 0, 0.08);
-            border-top-color: var(--accent);
-            animation: spin 1s linear infinite;
-            flex: 0 0 36px;
-        }
-
-        .loading-text {
-            font-weight: 700;
-            color: var(--p-char);
-            font-size: 15px;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* Responsive: wider screens show two-column grid and bigger sizes */
         @media (min-width:640px) {
             .grid {
                 grid-template-columns: 1fr 1fr;
@@ -399,7 +372,7 @@
                             <div class="name">Faça seu pedido</div>
                             <div class="desc">Peça seu brownie favorito — escolha entrega ou retirada.</div>
                         </div>
-                        <button class="btn" aria-label="Faça seu pedido">Pedir</button>
+                        <a class="btn" aria-label="Faça seu pedido" href="carrinho.html">Pedir</a>
                     </article>
 
                     <article class="card">
@@ -425,7 +398,7 @@
                             <div class="name">carrinho</div>
                             <div class="desc">Olhe os itens do carrinho.</div>
                         </div>
-                        <button class="btn" aria-label="Sobre">ver</button>
+                        <a class="btn" aria-label="Sobre" href="carrinho.html">ver</a>
                     </article>
 
                     <div id="tabela">
@@ -441,88 +414,85 @@
     </div>
 
     <div class="fab" role="navigation" aria-label="Menu rápido">
-        <a href="index.html" aria-label="Página inicial"><img src="casa.png" alt="Início"></a>
-        <a href="carrinho.html" aria-label="Carrinho"><img src="carrinho-carrinho.png" alt="Carrinho"></a>
-        <a href="chat.html" aria-label="Chat"><img src="balao-de-fala.png" alt="Chat"></a>
-    </div>
-
-    <!-- Loading overlay -->
-    <div id="loading" class="loading" role="status" aria-hidden="true" aria-live="polite">
-        <div class="loading-card" role="presentation">
-            <div class="spinner" aria-hidden="true"></div>
-            <div class="loading-text">Carregando...</div>
-        </div>
+        <span class="active-indicator" aria-hidden="true"></span>
+        <a href="index.html" aria-label="Página inicial"><img src="casa.png" alt="Início"><span class="label">Faça seu pedido</span></a>
+        <a href="carrinho.html" aria-label="Carrinho"><img src="carrinho-carrinho.png" alt="Carrinho"><span class="label">Carrinho</span></a>
+        <a href="chat.html" aria-label="Chat"><img src="balao-de-fala.png" alt="Chat"><span class="label">Chat</span></a>
     </div>
 
     <script>
-        // Mostra/oculta a tela de loading
-        function showLoading() {
-            const el = document.getElementById('loading');
-            el.setAttribute('aria-hidden', 'false');
-            el.classList.add('show');
-            // bloqueia scroll enquanto aberto
-            document.documentElement.style.overflow = 'hidden';
-            document.body.style.overflow = 'hidden';
-        }
-        function hideLoading() {
-            const el = document.getElementById('loading');
-            el.setAttribute('aria-hidden', 'true');
-            el.classList.remove('show');
-            document.documentElement.style.overflow = '';
-            document.body.style.overflow = '';
-        }
-
-        // Botões das cards: mostra loading e mantém comportamento (mostra alert como antes)
+        // Botões das cards: ação simples (sem loading)
         document.querySelectorAll('.card .btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const name = e.target.closest('.card').querySelector('.name').textContent;
-                showLoading();
-                // simula trabalho; depois esconde e executa ação (alert)
-                setTimeout(() => {
-                    hideLoading();
-                    alert(name + ' aberto');
-                }, 800);
+                alert(name + ' aberto');
             });
         });
 
-        // Links do fab: mostra loading e navega após pequena pausa
-        document.querySelectorAll('.fab a').forEach(a => {
-            a.addEventListener('click', (e) => {
-                e.preventDefault();
-                const href = a.getAttribute('href');
-                showLoading();
-                // tempo curto para mostrar loading antes da navegação
-                setTimeout(() => {
-                    // navegar para o destino (mantém comportamento nativo)
-                    window.location.href = href;
-                }, 400);
+        // busca: aceita Enter no input para comportamento simples
+        document.querySelectorAll('.search input').forEach(input => {
+            input.addEventListener('keydown', (ev) => {
+                if (ev.key === 'Enter') {
+                    ev.preventDefault();
+                    const first = document.querySelector('.card .name');
+                    if (first) first.scrollIntoView({behavior: 'smooth', block: 'center'});
+                }
             });
         });
 
-        // botão de busca também mostra loading
-        document.querySelectorAll('.search button, .search input').forEach(el => {
-            if (el.tagName === 'BUTTON') {
-                el.addEventListener('click', (e) => {
-                    showLoading();
-                    setTimeout(hideLoading, 700);
-                });
-            }
-            if (el.tagName === 'INPUT') {
-                // opcional: ao pressionar Enter no input
-                el.addEventListener('keydown', (ev) => {
-                    if (ev.key === 'Enter') {
-                        ev.preventDefault();
-                        showLoading();
-                        setTimeout(hideLoading, 700);
-                    }
-                });
-            }
-        });
+        // marca e anima o indicador do FAB (borda branca no ícone + moving white pill)
+        (function markFabActive(){
+            const fab = document.querySelector('.fab');
+            if(!fab) return;
+            const indicator = fab.querySelector('.active-indicator');
+            const links = Array.from(fab.querySelectorAll('a'));
 
-        // Esc para fechar loading manualmente (útil durante desenvolvimento)
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') hideLoading();
-        });
+            function positionIndicator(targetLink){
+                if(!targetLink) return;
+                const padding = 6; // matches .fab left padding
+                const linkRect = targetLink.getBoundingClientRect();
+                const fabRect = fab.getBoundingClientRect();
+                const width = Math.max(64, Math.round(linkRect.width)); // min width
+                const x = Math.round(linkRect.left - fabRect.left - padding);
+                indicator.style.width = width + 'px';
+                indicator.style.transform = `translateX(${x}px)`;
+            }
+
+            function updateActive(byHref){
+                const current = (byHref || location.pathname.split('/').pop() || 'index.html').toLowerCase();
+                let found = links.find(a => (a.getAttribute('href')||'').split('/').pop().toLowerCase() === current);
+                if(!found) found = links[0];
+                links.forEach(a=> a.classList.toggle('active', a === found));
+                positionIndicator(found);
+            }
+
+            // initialize after layout
+            window.addEventListener('load', ()=> updateActive());
+            // also run immediately in case load already fired
+            setTimeout(()=> updateActive(), 50);
+
+            // click handlers: mark active then navigate (default behavior)
+            links.forEach(a=>{
+                a.addEventListener('click', (e)=>{
+                    // allow normal navigation but animate immediately
+                    e.preventDefault();
+                    links.forEach(x=> x.classList.remove('active'));
+                    a.classList.add('active');
+                    positionIndicator(a);
+                    // small delay to show animation then navigate
+                    setTimeout(()=> { window.location.href = a.href; }, 220);
+                });
+            });
+
+            // reposition on resize (responsive)
+            window.addEventListener('resize', ()=> {
+                const active = fab.querySelector('a.active') || links[0];
+                positionIndicator(active);
+            });
+
+            // handle history navigation
+            window.addEventListener('popstate', ()=> updateActive());
+        })();
     </script>
 </body>
 

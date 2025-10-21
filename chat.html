@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Chat — Brownies do Marcão</title>
+<style>
+    :root{
+        --accent:#EB5E28;
+        --p-char:#252422;
+    }
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:#FFFCF2;}
+    .page{padding:20px}
+    h1{margin:0 0 10px}
+
+    /* FAB stylings matching index.html (dark pill + moving white indicator) */
+    .fab{
+        position: fixed;
+        left:50%;
+        transform:translateX(-50%);
+        bottom:calc(18px + env(safe-area-inset-bottom));
+        background: rgba(37,37,40,0.96);
+        color:#fff;
+        border-radius:999px;
+        padding:6px;
+        box-shadow:0 10px 30px rgba(0,0,0,0.35);
+        width:min(92%,420px);
+        display:flex;
+        gap:6px;
+        align-items:center;
+        z-index:20;
+        padding-left:6px;
+        padding-right:6px;
+    }
+
+    .fab .active-indicator{
+        position:absolute;
+        top:6px;
+        left:6px;
+        height:calc(100% - 12px);
+        width:80px;
+        border-radius:999px;
+        background:#fff;
+        box-shadow:0 8px 24px rgba(0,0,0,0.28);
+        transform:translateX(0);
+        transition: transform .26s cubic-bezier(.2,.9,.2,1), width .18s;
+        z-index:1;
+        pointer-events:none;
+    }
+
+    .fab a{
+        position:relative;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        flex:1;
+        padding:10px 8px;
+        border-radius:999px;
+        text-decoration:none;
+        gap:6px;
+        flex-direction:column;
+        color:#d6d6d8;
+        z-index:2;
+        transition: color .18s, transform .18s;
+    }
+    .fab a img{width:24px;height:24px;transition:box-shadow .18s,transform .18s}
+    .fab a .label{font-size:12px;font-weight:700;color:inherit}
+    .fab a.active{color:var(--p-char);transform:translateY(-1px)}
+    .fab a.active img{box-shadow:none}
+
+</style>
+</head>
+<body>
+    <div class="page">
+        <h1>Chat</h1>
+        <p>Página de chat (conteúdo de exemplo).</p>
+    </div>
+
+    <div class="fab" role="navigation" aria-label="Menu rápido">
+        <span class="active-indicator" aria-hidden="true"></span>
+        <a href="index.html" aria-label="Página inicial"><img src="casa.png" alt="Início"><span class="label">Faça seu pedido</span></a>
+        <a href="carrinho.html" aria-label="Carrinho"><img src="carrinho-carrinho.png" alt="Carrinho"><span class="label">Carrinho</span></a>
+        <a href="chat.html" aria-label="Chat"><img src="balao-de-fala.png" alt="Chat"><span class="label">Chat</span></a>
+    </div>
+
+    <script>
+        (function markFabActive(){
+            const fab = document.querySelector('.fab');
+            if(!fab) return;
+            const indicator = fab.querySelector('.active-indicator');
+            const links = Array.from(fab.querySelectorAll('a'));
+
+            function positionIndicator(targetLink){
+                if(!targetLink) return;
+                const padding = 6;
+                const linkRect = targetLink.getBoundingClientRect();
+                const fabRect = fab.getBoundingClientRect();
+                const width = Math.max(64, Math.round(linkRect.width));
+                const x = Math.round(linkRect.left - fabRect.left - padding);
+                indicator.style.width = width + 'px';
+                indicator.style.transform = `translateX(${x}px)`;
+            }
+
+            function updateActive(byHref){
+                const current = (byHref || location.pathname.split('/').pop() || 'index.html').toLowerCase();
+                let found = links.find(a => (a.getAttribute('href')||'').split('/').pop().toLowerCase() === current);
+                if(!found) found = links[0];
+                links.forEach(a=> a.classList.toggle('active', a === found));
+                positionIndicator(found);
+            }
+
+            window.addEventListener('load', ()=> updateActive());
+            setTimeout(()=> updateActive(), 50);
+
+            links.forEach(a=>{
+                a.addEventListener('click', (e)=>{
+                    e.preventDefault();
+                    links.forEach(x=> x.classList.remove('active'));
+                    a.classList.add('active');
+                    positionIndicator(a);
+                    setTimeout(()=> { window.location.href = a.href; }, 220);
+                });
+            });
+
+            window.addEventListener('resize', ()=> {
+                const active = fab.querySelector('a.active') || links[0];
+                positionIndicator(active);
+            });
+
+            window.addEventListener('popstate', ()=> updateActive());
+        })();
+    </script>
+</body>
+</html>
