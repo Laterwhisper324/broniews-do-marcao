@@ -626,42 +626,39 @@
                     return;
                 }
 
-                // monte o SQL (se ainda quiser enviar) — opcional
+                // monte o SQL (opcional)
                 const sql = `insert into usuarios(nome,email,senha) values ("${escDouble(name)}","${escDouble(email)}","${escDouble(pass)}")`;
 
                 try {
-                    // troque pela URL do seu app no Render (ex: https://seu-app.onrender.com/cadastrar)
-                    const RENDER_URL = 'https://broniews-do-marcao-1.onrender.com';
+                    const ENDPOINT = 'https://broniews-do-marcao-1.onrender.com/cadastro';
 
-                    const resp = await fetch(RENDER_URL, {
+                    const resp = await fetch(ENDPOINT, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            nome: name,
+                            name: name,
                             email: email,
-                            senha: pass,
+                            password: pass,
                             sql: sql
                         })
                     });
 
-                    if (!resp.ok) {
-                        const text = await resp.text().catch(()=>null);
-                        console.error('Erro resposta:', resp.status, text);
+                    const data = await resp.json().catch(()=>null);
+
+                    if (resp.ok && data && data.ok) {
+                        form.reset();
+                        const overlay = document.getElementById('loginOverlay');
+                        if (overlay && overlay.classList.contains('show')) {
+                            overlay.classList.remove('show');
+                            overlay.setAttribute('aria-hidden','true');
+                            document.documentElement.style.overflow = '';
+                            document.body.style.overflow = '';
+                        }
+                        showStatus('Cadastro enviado com sucesso.', 3000);
+                    } else {
+                        console.error('Erro resposta:', resp.status, data);
                         showStatus('Erro ao enviar dados ao servidor', 3000);
-                        return;
                     }
-
-                    // resposta bem sucedida
-                    form.reset();
-                    const overlay = document.getElementById('loginOverlay');
-                    if (overlay && overlay.classList.contains('show')) {
-                        overlay.classList.remove('show');
-                        overlay.setAttribute('aria-hidden','true');
-                        document.documentElement.style.overflow = '';
-                        document.body.style.overflow = '';
-                    }
-                    showStatus('Cadastro enviado com sucesso.', 3000);
-
                 } catch (err) {
                     console.error('Erro de rede:', err);
                     showStatus('Erro de comunicação com o servidor', 3000);
