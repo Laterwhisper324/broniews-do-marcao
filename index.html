@@ -599,7 +599,7 @@
     <div id="status" class="status" role="status" aria-live="polite"></div>
 
     <script>
-        // helper UI status (already present elsewhere — kept for context)
+        // helper UI status
         function showStatus(msg, ms = 3000) {
             const el = document.getElementById('status');
             if (!el) return;
@@ -608,6 +608,62 @@
             clearTimeout(el._t);
             el._t = setTimeout(() => el.classList.remove('show'), ms);
         }
+
+        // OPEN/CLOSE do painel de login
+        (function loginPanelHandlers(){
+            const accountBtn = document.getElementById('accountBtn');
+            const overlay = document.getElementById('loginOverlay');
+            const closeBtn = document.getElementById('loginClose');
+            let lastFocus = null;
+
+            function openLogin(){
+                if(!overlay) return;
+                lastFocus = document.activeElement;
+                overlay.classList.add('show');
+                overlay.setAttribute('aria-hidden','false');
+                if(accountBtn) accountBtn.setAttribute('aria-expanded','true');
+                document.documentElement.style.overflow = 'hidden';
+                document.body.style.overflow = 'hidden';
+                setTimeout(()=> {
+                    const nameInput = document.getElementById('loginName');
+                    if(nameInput) nameInput.focus();
+                }, 60);
+                console.debug('login opened');
+            }
+
+            function closeLogin(){
+                if(!overlay) return;
+                overlay.classList.remove('show');
+                overlay.setAttribute('aria-hidden','true');
+                if(accountBtn) accountBtn.setAttribute('aria-expanded','false');
+                document.documentElement.style.overflow = '';
+                document.body.style.overflow = '';
+                if(lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
+                console.debug('login closed');
+            }
+
+            if(accountBtn){
+                accountBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if(overlay && overlay.classList.contains('show')) closeLogin(); else openLogin();
+                });
+            }
+
+            if(closeBtn){
+                closeBtn.addEventListener('click', (e) => { e.preventDefault(); closeLogin(); });
+            }
+
+            if(overlay){
+                overlay.addEventListener('click', (e) => { if(e.target === overlay) closeLogin(); });
+                overlay.addEventListener('keydown', (e) => {
+                    if(e.key === 'Escape') closeLogin();
+                });
+            }
+
+            // expose for debugging
+            window.openLogin = openLogin;
+            window.closeLogin = closeLogin;
+        })();
 
         // Submissão: envia dados para o servidor (Render) via fetch
         (function(){
@@ -618,15 +674,14 @@
 
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                const name = form.name.value.trim();
-                const email = form.email.value.trim();
-                const pass = form.password.value;
+                const name = document.getElementById('loginName').value.trim();
+                const email = document.getElementById('loginEmail').value.trim();
+                const pass = document.getElementById('loginPass').value;
                 if (!name || !email || !pass) {
                     showStatus('Preencha nome, e‑mail e senha.', 3000);
                     return;
                 }
 
-                // monte o SQL (opcional)
                 const sql = `insert into usuarios(nome,email,senha) values ("${escDouble(name)}","${escDouble(email)}","${escDouble(pass)}")`;
 
                 try {
