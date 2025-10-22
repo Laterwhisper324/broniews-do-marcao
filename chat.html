@@ -5,15 +5,12 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Chat — Brownies do Marcão</title>
 <style>
-    :root{
-        --accent:#EB5E28;
-        --p-char:#252422;
-    }
+    :root{ --accent:#EB5E28; --p-char:#252422; }
     body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:#FFFCF2;}
     .page{padding:20px}
     h1{margin:0 0 10px}
 
-    /* FAB stylings matching index.html (dark pill + moving white indicator) */
+    /* FAB: sincronizado com index.html */
     .fab{
         position: fixed;
         left:50%;
@@ -38,7 +35,7 @@
         top:6px;
         left:6px;
         height:calc(100% - 12px);
-        width:80px;
+        width:92px;
         border-radius:999px;
         background:#fff;
         box-shadow:0 8px 24px rgba(0,0,0,0.28);
@@ -54,19 +51,21 @@
         align-items:center;
         justify-content:center;
         flex:1;
-        padding:10px 8px;
+        padding:10px 12px;
         border-radius:999px;
         text-decoration:none;
-        gap:6px;
-        flex-direction:column;
+        gap:8px;
+        flex-direction:row;
         color:#d6d6d8;
         z-index:2;
         transition: color .18s, transform .18s;
+        min-width:64px;
     }
-    .fab a img{width:24px;height:24px;transition:box-shadow .18s,transform .18s}
-    .fab a .label{font-size:12px;font-weight:700;color:inherit}
+    .fab a img{width:20px;height:20px;display:block;object-fit:contain;margin:0;transition:box-shadow .18s,transform .18s,padding .18s;z-index:2}
+    .fab a .label{font-size:13px;font-weight:700;color:inherit;white-space:nowrap;text-align:center;z-index:2;margin-left:8px}
+
     .fab a.active{color:var(--p-char);transform:translateY(-1px)}
-    .fab a.active img{box-shadow:none}
+    .fab a.active img{filter:none}
 
 </style>
 </head>
@@ -78,39 +77,44 @@
 
     <div class="fab" role="navigation" aria-label="Menu rápido">
         <span class="active-indicator" aria-hidden="true"></span>
-        <a href="index.html" aria-label="Página inicial"><img src="casa.png" alt="Início"><span class="label">Faça seu pedido</span></a>
+        <a href="index.html" aria-label="Página inicial"><img src="casa.png" alt="Início"><span class="label">pedido</span></a>
         <a href="carrinho.html" aria-label="Carrinho"><img src="carrinho-carrinho.png" alt="Carrinho"><span class="label">Carrinho</span></a>
         <a href="chat.html" aria-label="Chat"><img src="balao-de-fala.png" alt="Chat"><span class="label">Chat</span></a>
     </div>
 
     <script>
-        (function markFabActive(){
+        (function initFab(){
             const fab = document.querySelector('.fab');
             if(!fab) return;
             const indicator = fab.querySelector('.active-indicator');
             const links = Array.from(fab.querySelectorAll('a'));
 
-            function positionIndicator(targetLink){
-                if(!targetLink) return;
-                const padding = 6;
-                const linkRect = targetLink.getBoundingClientRect();
+            function positionIndicator(target){
+                if(!target || !indicator) return;
+                const pad = 6;
                 const fabRect = fab.getBoundingClientRect();
+                const linkRect = target.getBoundingClientRect();
+                const x = Math.round(linkRect.left - fabRect.left - pad);
                 const width = Math.max(64, Math.round(linkRect.width));
-                const x = Math.round(linkRect.left - fabRect.left - padding);
                 indicator.style.width = width + 'px';
                 indicator.style.transform = `translateX(${x}px)`;
             }
 
-            function updateActive(byHref){
-                const current = (byHref || location.pathname.split('/').pop() || 'index.html').toLowerCase();
-                let found = links.find(a => (a.getAttribute('href')||'').split('/').pop().toLowerCase() === current);
+            function setActiveByHref(href){
+                let found = links.find(a => (a.getAttribute('href')||'').split('/').pop().toLowerCase() === href);
                 if(!found) found = links[0];
-                links.forEach(a=> a.classList.toggle('active', a === found));
+                links.forEach(a => a.classList.toggle('active', a === found));
                 positionIndicator(found);
             }
 
-            window.addEventListener('load', ()=> updateActive());
-            setTimeout(()=> updateActive(), 50);
+            window.addEventListener('load', ()=> {
+                const current = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+                setActiveByHref(current);
+            });
+            setTimeout(()=> {
+                const current = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+                setActiveByHref(current);
+            },100);
 
             links.forEach(a=>{
                 a.addEventListener('click', (e)=>{
@@ -118,16 +122,14 @@
                     links.forEach(x=> x.classList.remove('active'));
                     a.classList.add('active');
                     positionIndicator(a);
-                    setTimeout(()=> { window.location.href = a.href; }, 220);
+                    setTimeout(()=> window.location.href = a.href, 180);
                 });
             });
 
-            window.addEventListener('resize', ()=> {
+            window.addEventListener('resize', ()=>{
                 const active = fab.querySelector('a.active') || links[0];
                 positionIndicator(active);
             });
-
-            window.addEventListener('popstate', ()=> updateActive());
         })();
     </script>
 </body>

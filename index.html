@@ -159,72 +159,6 @@
             .login-close{right:8px;top:8px}
         }
 
-        html,
-        body {
-            height: 100%;
-            margin: 0;
-            background: var(--bg);
-            -webkit-text-size-adjust: 100%;
-        }
-
-        body {
-            padding: env(safe-area-inset-top) 16px env(safe-area-inset-bottom);
-            color: #111;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        .app {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        /* Header */
-        header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin: 12px 0 18px;
-        }
-
-        .brand {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .title {
-            font-size: 18px;
-            font-weight: 700;
-            line-height: 1;
-        }
-
-        .subtitle {
-            font-size: 12px;
-            color: var(--muted);
-        }
-
-        /* Top bar controls */
-        .top-controls {
-            margin-left: auto;
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .btn {
-            background: var(--card);
-            border: 1px solid #e6e9ef;
-            padding: 8px 12px;
-            border-radius: 10px;
-            font-size: 14px;
-            color: var(--accent);
-            min-width: 44px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02);
-            cursor: pointer;
-        }
-
         /* Search / Hero */
         .hero {
             background: linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.8));
@@ -385,10 +319,10 @@
             display: flex;
             gap: 6px;
             align-items: center;
-            position: fixed;
             z-index: 20;
             padding-left: 6px;
             padding-right: 6px;
+            position: fixed;
         }
 
         /* white moving pill behind active item */
@@ -397,7 +331,7 @@
             top: 6px;
             left: 6px;
             height: calc(100% - 12px);
-            width: 80px;
+            width: 92px;
             border-radius: 999px;
             background: #fff;
             box-shadow: 0 8px 24px rgba(0,0,0,0.28);
@@ -413,19 +347,20 @@
             align-items: center;
             justify-content: center;
             flex: 1;
-            padding: 10px 8px;
+            padding: 10px 12px;
             border-radius: 999px;
             text-decoration: none;
-            gap: 6px;
-            flex-direction: column;
+            gap: 8px;
+            flex-direction: row;
             color: #d6d6d8;
             z-index: 2; /* above indicator */
             transition: color .18s, transform .18s;
+            min-width: 64px;
         }
 
         .fab a img {
-            width: clamp(20px, 6vw, 24px);
-            height: auto;
+            width: 20px;
+            height: 20px;
             display: block;
             object-fit: contain;
             margin: 0;
@@ -435,13 +370,14 @@
         }
 
         .fab a .label {
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 700;
             line-height: 1;
             color: inherit;
             white-space: nowrap;
             text-align: center;
             z-index: 2;
+            margin-left: 8px;
         }
 
         /* active link styles (text + icon contrast on white pill) */
@@ -450,10 +386,8 @@
             transform: translateY(-1px);
         }
 
-        /* manter destaque do ativo (bordinha branca no ícone) */
-        .fab a.active img {
-            
-            box-shadow: none;
+        .fab a.active img{
+            filter: none;
         }
 
         @media (min-width:640px) {
@@ -505,7 +439,7 @@
                 <!-- Account button: abre a seção de login -->
                 <button class="account-btn" id="accountBtn" aria-haspopup="dialog" aria-controls="loginOverlay" aria-expanded="false" title="Entrar">
                     <!-- use an inline SVG or image (troque src se preferir) -->
-                    <img src="do-utilizador.png" alt="Conta">
+                    <img src="user-icon.png" alt="Conta">
                 </button>
             </div>
         </header>
@@ -577,7 +511,6 @@
             <p>Use seu e‑mail e senha para acessar o pedido e histórico.</p>
 
             <form class="login-form" id="loginForm">
-                <input type="text" id="loginName" name="name" placeholder="Nome completo" required autocomplete="name">
                 <input type="email" id="loginEmail" name="email" placeholder="E‑mail" required autocomplete="email">
                 <input type="password" id="loginPass" name="password" placeholder="Senha" required autocomplete="current-password">
                 <div class="login-actions">
@@ -590,7 +523,7 @@
 
     <div class="fab" role="navigation" aria-label="Menu rápido">
         <span class="active-indicator" aria-hidden="true"></span>
-        <a href="index.html" aria-label="Página inicial"><img src="casa.png" alt="Início"><span class="label">Faça seu pedido</span></a>
+        <a href="index.html" aria-label="Página inicial"><img src="casa.png" alt="Início"><span class="label">pedido</span></a>
         <a href="carrinho.html" aria-label="Carrinho"><img src="carrinho-carrinho.png" alt="Carrinho"><span class="label">Carrinho</span></a>
         <a href="chat.html" aria-label="Chat"><img src="balao-de-fala.png" alt="Chat"><span class="label">Chat</span></a>
     </div>
@@ -609,7 +542,7 @@
             el._t = setTimeout(() => el.classList.remove('show'), ms);
         }
 
-        // OPEN/CLOSE do painel de login
+        // login panel handlers (unchanged logic)
         (function loginPanelHandlers(){
             const accountBtn = document.getElementById('accountBtn');
             const overlay = document.getElementById('loginOverlay');
@@ -625,10 +558,9 @@
                 document.documentElement.style.overflow = 'hidden';
                 document.body.style.overflow = 'hidden';
                 setTimeout(()=> {
-                    const nameInput = document.getElementById('loginName');
+                    const nameInput = document.getElementById('loginName') || document.getElementById('loginEmail');
                     if(nameInput) nameInput.focus();
                 }, 60);
-                console.debug('login opened');
             }
 
             function closeLogin(){
@@ -639,7 +571,6 @@
                 document.documentElement.style.overflow = '';
                 document.body.style.overflow = '';
                 if(lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
-                console.debug('login closed');
             }
 
             if(accountBtn){
@@ -660,64 +591,105 @@
                 });
             }
 
-            // expose for debugging
             window.openLogin = openLogin;
             window.closeLogin = closeLogin;
         })();
 
-        // Submissão: envia dados para o servidor (Render) via fetch
+        // FORM submission (async/await) — safe and fixed
         (function(){
-            const form = document.getElementById('loginForm');
-            if (!form) return;
+          const form = document.getElementById('loginForm');
+          if (!form) return;
 
-            function escDouble(s){ return String(s).replace(/"/g,'\\"'); }
+          function escDouble(s){ return String(s).replace(/"/g,'\\"'); }
 
-            form.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const name = document.getElementById('loginName').value.trim();
-                const email = document.getElementById('loginEmail').value.trim();
-                const pass = document.getElementById('loginPass').value;
-                if (!name || !email || !pass) {
-                    showStatus('Preencha nome, e‑mail e senha.', 3000);
-                    return;
+          form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = (document.getElementById('loginName') || {}).value || '';
+            const email = document.getElementById('loginEmail').value.trim();
+            const pass = document.getElementById('loginPass').value;
+            if (!name || !email || !pass) {
+              showStatus('Preencha nome, e‑mail e senha.', 3000);
+              return;
+            }
+
+            try {
+              const resp = await fetch('http://localhost:3000/cadastro', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, password: pass })
+              });
+
+              const data = await resp.json().catch(()=>null);
+              if (resp.ok && data && data.ok) {
+                form.reset();
+                const overlay = document.getElementById('loginOverlay');
+                if (overlay && overlay.classList.contains('show')) {
+                  overlay.classList.remove('show');
+                  overlay.setAttribute('aria-hidden','true');
+                  document.documentElement.style.overflow = '';
+                  document.body.style.overflow = '';
                 }
+                showStatus('Cadastro salvo localmente.', 3000);
+              } else {
+                console.error('Erro resposta:', resp.status, data);
+                showStatus('Erro ao salvar cadastro.', 3000);
+              }
+            } catch (err) {
+              console.error('Erro de rede:', err);
+              showStatus('Erro de comunicação com o servidor', 3000);
+            }
+          });
+        })();
 
-                const sql = `insert into usuarios(nome,email,senha) values ("${escDouble(name)}","${escDouble(email)}","${escDouble(pass)}")`;
+        // FAB indicator + active handling
+        (function initFab(){
+            const fab = document.querySelector('.fab');
+            if(!fab) return;
+            const indicator = fab.querySelector('.active-indicator');
+            const links = Array.from(fab.querySelectorAll('a'));
 
-                try {
-                    const ENDPOINT = 'https://broniews-do-marcao-1.onrender.com/cadastro';
+            function positionIndicator(target){
+                if(!target || !indicator) return;
+                const pad = 6;
+                const fabRect = fab.getBoundingClientRect();
+                const linkRect = target.getBoundingClientRect();
+                const x = Math.round(linkRect.left - fabRect.left - pad);
+                const width = Math.max(64, Math.round(linkRect.width));
+                indicator.style.width = width + 'px';
+                indicator.style.transform = `translateX(${x}px)`;
+            }
 
-                    const resp = await fetch(ENDPOINT, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            name: name,
-                            email: email,
-                            password: pass,
-                            sql: sql
-                        })
-                    });
+            function setActiveByHref(href){
+                let found = links.find(a => (a.getAttribute('href')||'').split('/').pop().toLowerCase() === href);
+                if(!found) found = links[0];
+                links.forEach(a => a.classList.toggle('active', a === found));
+                positionIndicator(found);
+            }
 
-                    const data = await resp.json().catch(()=>null);
+            // init on load
+            window.addEventListener('load', ()=> {
+                const current = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+                setActiveByHref(current);
+            });
+            setTimeout(()=> {
+                const current = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+                setActiveByHref(current);
+            },100);
 
-                    if (resp.ok && data && data.ok) {
-                        form.reset();
-                        const overlay = document.getElementById('loginOverlay');
-                        if (overlay && overlay.classList.contains('show')) {
-                            overlay.classList.remove('show');
-                            overlay.setAttribute('aria-hidden','true');
-                            document.documentElement.style.overflow = '';
-                            document.body.style.overflow = '';
-                        }
-                        showStatus('Cadastro enviado com sucesso.', 3000);
-                    } else {
-                        console.error('Erro resposta:', resp.status, data);
-                        showStatus('Erro ao enviar dados ao servidor', 3000);
-                    }
-                } catch (err) {
-                    console.error('Erro de rede:', err);
-                    showStatus('Erro de comunicação com o servidor', 3000);
-                }
+            // click: animate then navigate
+            links.forEach(a=>{
+                a.addEventListener('click', (e)=>{
+                    e.preventDefault();
+                    links.forEach(x=> x.classList.remove('active'));
+                    a.classList.add('active');
+                    positionIndicator(a);
+                    setTimeout(()=> window.location.href = a.href, 180);
+                });
+            });
+
+            window.addEventListener('resize', ()=>{
+                const active = fab.querySelector('a.active') || links[0];
+                positionIndicator(active);
             });
         })();
     </script>
