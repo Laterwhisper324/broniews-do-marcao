@@ -91,6 +91,140 @@
             cursor: pointer;
         }
 
+        /* Account icon button (top bar) */
+        .account-btn{
+            background: var(--card);
+            border: 1px solid rgba(0,0,0,0.06);
+            padding: 8px;
+            border-radius: 10px;
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            gap:8px;
+            cursor:pointer;
+            color:var(--p-char);
+        }
+        .account-btn img{ width:20px; height:20px; display:block; }
+
+        /* Login overlay / panel */
+        .login-overlay{
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.45);
+            z-index: 120;
+            padding: env(safe-area-inset-top) 16px env(safe-area-inset-bottom);
+        }
+        .login-overlay.show{ display:flex; }
+
+        .login-panel{
+            width: 100%;
+            max-width: 420px;
+            background: #fff;
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: 0 18px 44px rgba(13,39,80,0.18);
+            position: relative;
+        }
+
+        .login-close{
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            width:36px;height:36px;border-radius:999px;border:none;
+            background:transparent;color:var(--p-char);font-size:18px;cursor:pointer;
+        }
+
+        .login-panel h3{margin:0 0 8px;font-size:18px;color:var(--p-char)}
+        .login-panel p{margin:0 0 12px;color:var(--muted);font-size:13px}
+
+        .login-form{display:flex;flex-direction:column;gap:10px}
+        .login-form input{
+            padding:10px 12px;border-radius:10px;border:1px solid #e6e9ef;font-size:14px;
+            outline:none;background:#fbfbfb;
+        }
+        .login-form .submit{
+            padding:11px;border-radius:10px;border:none;background:var(--accent);color:#fff;font-weight:700;
+            cursor:pointer;
+        }
+
+        .login-actions{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
+        .login-actions a{font-size:13px;color:var(--muted);text-decoration:none}
+
+        /* Small responsive tweaks */
+        @media (max-width:420px){
+            .login-panel{padding:14px}
+            .login-close{right:8px;top:8px}
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            background: var(--bg);
+            -webkit-text-size-adjust: 100%;
+        }
+
+        body {
+            padding: env(safe-area-inset-top) 16px env(safe-area-inset-bottom);
+            color: #111;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .app {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 12px 0 18px;
+        }
+
+        .brand {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .title {
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .subtitle {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        /* Top bar controls */
+        .top-controls {
+            margin-left: auto;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .btn {
+            background: var(--card);
+            border: 1px solid #e6e9ef;
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 14px;
+            color: var(--accent);
+            min-width: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02);
+            cursor: pointer;
+        }
+
         /* Search / Hero */
         .hero {
             background: linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.8));
@@ -339,9 +473,25 @@
             outline: 3px solid rgba(11, 132, 255, 0.12);
             outline-offset: 2px;
         }
+
+        /* inline status (replaces popups) */
+        .status {
+            position: fixed;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: calc(92px + env(safe-area-inset-bottom));
+            background: rgba(37,37,40,0.95);
+            color: #fff;
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-weight:700;
+            display: none;
+            z-index: 200;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.28);
+        }
+        .status.show { display: block; }
     </style>
 </head>
-
 <body>
     <div class="app" role="application" aria-label="Aplicativo de exemplo">
         <header>
@@ -351,6 +501,12 @@
             </div>
 
             <div class="top-controls" role="navigation" aria-label="Controles">
+                <!-- existing icons (if any) -->
+                <!-- Account button: abre a seção de login -->
+                <button class="account-btn" id="accountBtn" aria-haspopup="dialog" aria-controls="loginOverlay" aria-expanded="false" title="Entrar">
+                    <!-- use an inline SVG or image (troque src se preferir) -->
+                    <img src="do-utilizador.png" alt="Conta">
+                </button>
             </div>
         </header>
 
@@ -413,6 +569,25 @@
         </main>
     </div>
 
+    <!-- Login overlay / modal -->
+    <div id="loginOverlay" class="login-overlay" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="loginTitle">
+        <div class="login-panel" role="document">
+            <button class="login-close" id="loginClose" aria-label="Fechar">✕</button>
+            <h3 id="loginTitle">Entrar na sua conta</h3>
+            <p>Use seu e‑mail e senha para acessar o pedido e histórico.</p>
+
+            <form class="login-form" id="loginForm">
+                <input type="text" id="loginName" name="name" placeholder="Nome completo" required autocomplete="name">
+                <input type="email" id="loginEmail" name="email" placeholder="E‑mail" required autocomplete="email">
+                <input type="password" id="loginPass" name="password" placeholder="Senha" required autocomplete="current-password">
+                <div class="login-actions">
+                    <a href="#" id="forgotLink">Esqueci a senha</a>
+                    <button type="submit" class="submit">Entrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div class="fab" role="navigation" aria-label="Menu rápido">
         <span class="active-indicator" aria-hidden="true"></span>
         <a href="index.html" aria-label="Página inicial"><img src="casa.png" alt="Início"><span class="label">Faça seu pedido</span></a>
@@ -420,7 +595,88 @@
         <a href="chat.html" aria-label="Chat"><img src="balao-de-fala.png" alt="Chat"><span class="label">Chat</span></a>
     </div>
 
+    <!-- non-modal status area (used instead of alert/popups) -->
+    <div id="status" class="status" role="status" aria-live="polite"></div>
+
     <script>
+        // helper UI status
+        function showStatus(msg, ms = 3000) {
+            const el = document.getElementById('status');
+            if (!el) return;
+            el.textContent = msg;
+            el.classList.add('show');
+            clearTimeout(el._t);
+            el._t = setTimeout(() => el.classList.remove('show'), ms);
+        }
+
+        // Replace card button alerts with non-blocking status (no popups)
+        document.querySelectorAll('.card .btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const nameEl = e.target.closest('.card').querySelector('.name');
+                const name = nameEl ? nameEl.textContent : 'item';
+                console.log(name + ' aberto');
+                showStatus(name + ' aberto');
+            });
+        });
+
+        // FAB navigation: animate then navigate (no alerts)
+        document.querySelectorAll('.fab a').forEach(a=>{
+            a.addEventListener('click', (e)=>{
+                e.preventDefault();
+                const href = a.getAttribute('href');
+                // visual active handled elsewhere; small delay then navigate
+                setTimeout(()=> { window.location.href = href; }, 220);
+            });
+        });
+
+        // Login / cadastro form submission: POST SQL to server and append to cadastros.txt
+        (function(){
+            const form = document.getElementById('loginForm');
+            if (!form) return;
+
+            function escDouble(s){ return String(s).replace(/"/g,'\\"'); }
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const name = form.name.value.trim();
+                const email = form.email.value.trim();
+                const pass = form.password.value;
+                if (!name || !email || !pass) {
+                    showStatus('Preencha nome, e‑mail e senha.', 3000);
+                    return;
+                }
+
+                const sql = `insert into usuarios(nome,email,senha) values ("${escDouble(name)}","${escDouble(email)}","${escDouble(pass)}")`;
+
+                try {
+                    const resp = await fetch('/cadastro', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name, email, password: pass, sql })
+                    });
+                    const data = await resp.json();
+                    if (resp.ok && data.ok) {
+                        // limpar formulário e fechar modal if open
+                        form.reset();
+                        const overlay = document.getElementById('loginOverlay');
+                        if (overlay && overlay.classList.contains('show')) {
+                            overlay.classList.remove('show');
+                            overlay.setAttribute('aria-hidden','true');
+                            document.documentElement.style.overflow = '';
+                            document.body.style.overflow = '';
+                        }
+                        showStatus('Cadastro salvo (arquivo cadastros.txt)', 3000);
+                    } else {
+                        console.error('Erro servidor:', data);
+                        showStatus('Erro ao salvar cadastro', 3000);
+                    }
+                } catch (err) {
+                    console.error('Erro fetch:', err);
+                    showStatus('Erro de comunicação', 3000);
+                }
+            });
+        })();
+
         // Botões das cards: ação simples (sem loading)
         document.querySelectorAll('.card .btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
@@ -493,6 +749,116 @@
             // handle history navigation
             window.addEventListener('popstate', ()=> updateActive());
         })();
+
+        // abre / fecha painel de login
+        (function(){
+            const accountBtn = document.getElementById('accountBtn');
+            const overlay = document.getElementById('loginOverlay');
+            const closeBtn = document.getElementById('loginClose');
+            const form = document.getElementById('loginForm');
+            let lastFocus = null;
+
+            function openLogin(){
+                lastFocus = document.activeElement;
+                overlay.classList.add('show');
+                overlay.setAttribute('aria-hidden','false');
+                accountBtn.setAttribute('aria-expanded','true');
+                // bloquear scroll de fundo
+                document.documentElement.style.overflow = 'hidden';
+                document.body.style.overflow = 'hidden';
+                // foco no primeiro input
+                setTimeout(()=> document.getElementById('loginEmail').focus(), 60);
+            }
+            function closeLogin(){
+                overlay.classList.remove('show');
+                overlay.setAttribute('aria-hidden','true');
+                accountBtn.setAttribute('aria-expanded','false');
+                document.documentElement.style.overflow = '';
+                document.body.style.overflow = '';
+                if(lastFocus && lastFocus.focus) lastFocus.focus();
+            }
+
+            accountBtn.addEventListener('click', (e)=>{
+                e.preventDefault();
+                if(overlay.classList.contains('show')) closeLogin(); else openLogin();
+            });
+
+            closeBtn.addEventListener('click', (e)=>{
+                e.preventDefault();
+                closeLogin();
+            });
+
+            overlay.addEventListener('click', (e)=>{
+                if(e.target === overlay) closeLogin();
+            });
+
+            // ESC para fechar
+            document.addEventListener('keydown', (e)=>{
+                if(e.key === 'Escape' && overlay.classList.contains('show')) closeLogin();
+            });
+
+            // Submissão simplificada (use sua API real aqui)
+            form.addEventListener('submit', (e)=>{
+                e.preventDefault();
+                const email = form.email.value.trim();
+                const pass = form.password.value;
+                if(!email || !pass){
+                    alert('Preencha e‑mail e senha.');
+                    return;
+                }
+                // simular login — substituir por fetch/ajax real
+                accountBtn.disabled = true;
+                accountBtn.textContent = 'Entrando...';
+                setTimeout(()=>{
+                    accountBtn.disabled = false;
+                    accountBtn.innerHTML = '<img src="user-icon.png" alt="Conta">'; // restaurar ícone
+                    closeLogin();
+                    alert('Entrou como ' + email);
+                }, 800);
+            });
+
+            // evitar tab fora do modal (simples trap)
+            overlay.addEventListener('keydown', (e)=>{
+                if(e.key !== 'Tab') return;
+                const focusable = overlay.querySelectorAll('a[href], button:not([disabled]), input, [tabindex]:not([tabindex="-1"])');
+                if(!focusable.length) return;
+                const first = focusable[0];
+                const last = focusable[focusable.length -1];
+                if(e.shiftKey && document.activeElement === first){
+                    e.preventDefault(); last.focus();
+                } else if(!e.shiftKey && document.activeElement === last){
+                    e.preventDefault(); first.focus();
+                }
+            });
+        })();
+
+        // Submissão: monta o SQL INSERT (nome,email,senha) e copia para clipboard
+    (function(){
+        const form = document.getElementById('loginForm');
+        if(!form) return;
+
+        function escDouble(s){ return String(s).replace(/"/g,'\\"'); }
+
+        form.addEventListener('submit', (e)=>{
+            e.preventDefault();
+            const name = form.name.value.trim();
+            const email = form.email.value.trim();
+            const pass = form.password.value;
+            if(!name || !email || !pass){
+                alert('Preencha nome, e‑mail e senha.');
+                return;
+            }
+
+            const sql = `insert into usuarios(nome,email,senha) values ("${escDouble(name)}","${escDouble(email)}","${escDouble(pass)}")`;
+
+            // log, copiar pro clipboard (se disponível) e notificar usuário
+            console.log(sql);
+            if(navigator.clipboard && navigator.clipboard.writeText){
+                navigator.clipboard.writeText(sql).catch(()=>{/* ignore */});
+            }
+            alert('SQL gerado:\n' + sql);
+        });
+    })();
     </script>
 </body>
 
