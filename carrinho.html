@@ -5,12 +5,48 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Carrinho — Brownies do Marcão</title>
 <style>
-    :root{ --accent:#EB5E28; --p-char:#252422; }
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:#FFFCF2;}
-    .page{padding:20px}
+    :root{ --accent:#EB5E28; --p-char:#252422; --bg:#FFFCF2; --card:#fff; --muted:#666; }
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:var(--bg); color:var(--p-char);}
+    .page{padding:20px; max-width:900px; margin:0 auto;}
     h1{margin:0 0 10px}
 
-    /* FAB: sincronizado com index.html */
+    .product {
+        display:flex;
+        gap:16px;
+        align-items:center;
+        background:var(--card);
+        padding:12px;
+        border-radius:12px;
+        box-shadow:0 6px 20px rgba(0,0,0,0.04);
+        margin-bottom:12px;
+    }
+    .product .info{flex:1}
+    .product .title{font-weight:700}
+    .product .price{color:var(--muted); margin-top:6px}
+
+    .qty-controls{display:flex;gap:8px;align-items:center}
+    .qty-controls button{width:36px;height:36px;border-radius:8px;border:1px solid rgba(0,0,0,0.06);background:#fff;cursor:pointer;font-size:18px;line-height:1}
+    .qty-controls input{width:56px;padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.08);text-align:center}
+
+    .btn{background:var(--accent);color:#fff;padding:10px 14px;border-radius:10px;border:none;cursor:pointer;font-weight:700}
+
+    .cart{
+        margin-top:18px;
+        background:var(--card);
+        padding:12px;border-radius:12px;box-shadow:0 6px 20px rgba(0,0,0,0.04);
+    }
+    .cart-row{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px dashed #eee}
+    .cart-row:last-child{border-bottom:0}
+    .small{font-size:13px;color:var(--muted)}
+
+    .total{
+        margin-top:12px;
+        display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid #f0f0f0;font-weight:800;font-size:18px;
+    }
+
+    .helper{font-size:13px;color:var(--muted);margin-top:8px}
+
+    /* FAB: kept from project */
     .fab{
         position: fixed;
         left:50%;
@@ -22,57 +58,54 @@
         padding:6px;
         box-shadow:0 10px 30px rgba(0,0,0,0.35);
         width:min(92%,420px);
-        display:flex;
-        gap:6px;
-        align-items:center;
-        z-index:20;
-        padding-left:6px;
-        padding-right:6px;
+        display:flex;gap:6px;align-items:center;z-index:20;padding-left:6px;padding-right:6px;
     }
-
-    .fab .active-indicator{
-        position:absolute;
-        top:6px;
-        left:6px;
-        height:calc(100% - 12px);
-        width:92px;
-        border-radius:999px;
-        background:#fff;
-        box-shadow:0 8px 24px rgba(0,0,0,0.28);
-        transform:translateX(0);
-        transition: transform .26s cubic-bezier(.2,.9,.2,1), width .18s;
-        z-index:1;
-        pointer-events:none;
-    }
-
-    .fab a{
-        position:relative;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        flex:1;
-        padding:10px 12px;
-        border-radius:999px;
-        text-decoration:none;
-        gap:8px;
-        flex-direction:row;
-        color:#d6d6d8;
-        z-index:2;
-        transition: color .18s, transform .18s;
-        min-width:64px;
-    }
-    .fab a img{width:20px;height:20px;display:block;object-fit:contain;margin:0;transition:box-shadow .18s,transform .18s,padding .18s;z-index:2}
-    .fab a .label{font-size:13px;font-weight:700;color:inherit;white-space:nowrap;text-align:center;z-index:2;margin-left:8px}
-
+    .fab .active-indicator{position:absolute;top:6px;left:6px;height:calc(100% - 12px);width:92px;border-radius:999px;background:#fff;box-shadow:0 8px 24px rgba(0,0,0,0.28);transform:translateX(0);transition:transform .26s,width .18s;z-index:1;pointer-events:none;}
+    .fab a{position:relative;display:flex;align-items:center;justify-content:center;flex:1;padding:10px 12px;border-radius:999px;text-decoration:none;gap:8px;flex-direction:row;color:#d6d6d8;z-index:2;transition:color .18s,transform .18s;min-width:64px}
+    .fab a img{width:20px;height:20px}
+    .fab a .label{font-size:13px;font-weight:700;margin-left:8px}
     .fab a.active{color:var(--p-char);transform:translateY(-1px)}
-    .fab a.active img{filter:none}
-
 </style>
 </head>
 <body>
     <div class="page">
         <h1>Carrinho</h1>
-        <p>Itens do carrinho aparecem aqui.</p>
+
+        <!-- Produto único exemplar: Brownie -->
+        <div class="product" id="productBrownie">
+            <div style="width:72px;height:72px;border-radius:10px;background:linear-gradient(135deg,#dfeffd,#cfe8ff);display:flex;align-items:center;justify-content:center;font-size:28px">🍫</div>
+            <div class="info">
+                <div class="title">Brownie Tradicional</div>
+                <div class="price small">R$ 7,50 cada · promoção: 2 por R$ 13,00</div>
+                <div class="helper">Clique em + para adicionar ao carrinho e em − para remover.</div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+                <div class="qty-controls" aria-label="Quantidade">
+                    <button type="button" id="decQty" aria-label="Diminuir">−</button>
+                    <input id="qtyInput" type="number" min="0" value="0" aria-label="Quantidade no carrinho">
+                    <button type="button" id="incQty" aria-label="Aumentar">+</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Carrinho -->
+        <div class="cart" id="cart">
+            <div style="font-weight:700;margin-bottom:8px">Seu pedido</div>
+            <div id="cartContents">
+                <div class="small">Nenhum item adicionado</div>
+            </div>
+
+            <div class="total">
+                <div>Total</div>
+                <div id="totalPrice">R$ 0,00</div>
+            </div>
+
+            <div style="display:flex;gap:8px;margin-top:12px">
+                <button id="clearCart" class="btn" style="background:#999">Limpar</button>
+                <button id="checkout" class="btn">Finalizar</button>
+            </div>
+        </div>
     </div>
 
     <div class="fab" role="navigation" aria-label="Menu rápido">
@@ -82,12 +115,146 @@
         <a href="chat.html" aria-label="Chat"><img src="balao-de-fala.png" alt="Chat"><span class="label">Chat</span></a>
     </div>
 
-    <script>
+<script>
+/*
+ Cart logic with promotion:
+ - unit price = 7.50
+ - every pair (2 items) costs 13.00
+ - total = pairs * 13 + remainder * 7.5
+
+ New behavior:
+ - remove "Adicionar" button.
+ - clicking + increments cart immediately; clicking − decrements immediately.
+ - qtyInput reflects the current cart quantity and can be edited directly.
+*/
+
+(function(){
+  const UNIT = 7.5;
+  const PAIR_PRICE = 13.0;
+
+  // DOM
+  const qtyInput = document.getElementById('qtyInput');
+  const incBtn = document.getElementById('incQty');
+  const decBtn = document.getElementById('decQty');
+  const cartContents = document.getElementById('cartContents');
+  const totalPriceEl = document.getElementById('totalPrice');
+  const clearBtn = document.getElementById('clearCart');
+  const checkoutBtn = document.getElementById('checkout');
+
+  // cart stored as quantity of brownies
+  let cartQty = 0;
+
+  function fmt(v){
+    return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+  }
+
+  function calcTotal(qty){
+    const pairs = Math.floor(qty / 2);
+    const rem = qty % 2;
+    const total = pairs * PAIR_PRICE + rem * UNIT;
+    return { total, pairs, rem };
+  }
+
+  function renderCart(){
+    cartContents.innerHTML = '';
+    if(cartQty <= 0){
+      cartContents.innerHTML = '<div class="small">Nenhum item adicionado</div>';
+      totalPriceEl.textContent = fmt(0);
+      qtyInput.value = 0;
+      return;
+    }
+
+    // item row
+    const itemRow = document.createElement('div');
+    itemRow.className = 'cart-row';
+    const name = document.createElement('div');
+    name.innerHTML = `<div style="font-weight:700">Brownie Tradicional</div><div class="small">${cartQty} unidade(s)</div>`;
+    const info = document.createElement('div');
+
+    const calc = calcTotal(cartQty);
+    // details: promotion breakdown
+    const details = document.createElement('div');
+    details.className = 'small';
+    details.innerHTML = `Pares: ${calc.pairs} × ${fmt(PAIR_PRICE)} = ${fmt(calc.pairs * PAIR_PRICE)}<br>Restantes: ${calc.rem} × ${fmt(UNIT)} = ${fmt(calc.rem * UNIT)}`;
+
+    info.innerHTML = `<div style="text-align:right">${fmt(calc.total)}</div>`;
+    itemRow.appendChild(name);
+    itemRow.appendChild(info);
+
+    cartContents.appendChild(itemRow);
+
+    const detailsRow = document.createElement('div');
+    detailsRow.style.marginTop = '8px';
+    detailsRow.appendChild(details);
+    cartContents.appendChild(detailsRow);
+
+    totalPriceEl.textContent = fmt(calc.total);
+    qtyInput.value = cartQty;
+  }
+
+  function setQty(newQty){
+    newQty = Math.max(0, Math.floor(Number(newQty) || 0));
+    if (newQty === cartQty) return;
+    cartQty = newQty;
+    renderCart();
+  }
+
+  // increment / decrement change cart quantity immediately
+  incBtn.addEventListener('click', ()=> {
+    setQty(cartQty + 1);
+  });
+  decBtn.addEventListener('click', ()=> {
+    setQty(cartQty - 1);
+  });
+
+  // allow manual editing of qty input
+  qtyInput.addEventListener('change', ()=> {
+    setQty(qtyInput.value);
+  });
+  qtyInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      setQty(qtyInput.value);
+      qtyInput.blur();
+    }
+  });
+
+  clearBtn.addEventListener('click', ()=> {
+    setQty(0);
+  });
+
+  checkoutBtn.addEventListener('click', ()=> {
+    if(cartQty <= 0) { alert('Carrinho vazio'); return; }
+    const c = calcTotal(cartQty);
+    alert(`Total a pagar: ${fmt(c.total)}\n( ${cartQty} itens — ${c.pairs} pares, ${c.rem} avulsos )`);
+  });
+
+  // initial render
+  renderCart();
+})();
+
+        // FAB init (robusta detecção do link ativo)
         (function initFab(){
             const fab = document.querySelector('.fab');
             if(!fab) return;
             const indicator = fab.querySelector('.active-indicator');
             const links = Array.from(fab.querySelectorAll('a'));
+
+            function nameFromPath(path){
+                const p = String(path || '').split('?')[0].split('#')[0];
+                const parts = p.split('/');
+                let last = parts.pop() || parts.pop() || '';
+                if(!last) last = 'index.html';
+                return last.toLowerCase();
+            }
+
+            function nameFromHref(a){
+                try {
+                    const u = new URL(a.href, location.href);
+                    return nameFromPath(u.pathname);
+                } catch (e) {
+                    return nameFromPath(a.getAttribute('href') || '');
+                }
+            }
 
             function positionIndicator(target){
                 if(!target || !indicator) return;
@@ -100,21 +267,23 @@
                 indicator.style.transform = `translateX(${x}px)`;
             }
 
-            function setActiveByHref(href){
-                let found = links.find(a => (a.getAttribute('href')||'').split('/').pop().toLowerCase() === href);
+            function updateActive(){
+                const current = nameFromPath(location.pathname);
+                let found = links.find(a => nameFromHref(a) === current);
+                if(!found){
+                    // try with explicit 'index.html' when path is '/'
+                    found = links.find(a => nameFromHref(a) === 'index.html');
+                }
                 if(!found) found = links[0];
                 links.forEach(a => a.classList.toggle('active', a === found));
+                links.forEach(a => a.removeAttribute('aria-current'));
+                if(found) found.setAttribute('aria-current','page');
                 positionIndicator(found);
             }
 
-            window.addEventListener('load', ()=> {
-                const current = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
-                setActiveByHref(current);
-            });
-            setTimeout(()=> {
-                const current = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
-                setActiveByHref(current);
-            },100);
+            window.addEventListener('load', updateActive);
+            // ensure runs after layout
+            setTimeout(updateActive, 80);
 
             links.forEach(a=>{
                 a.addEventListener('click', (e)=>{
