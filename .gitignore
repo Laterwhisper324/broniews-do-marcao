@@ -1,0 +1,17 @@
+node_modules/
+npm-debug.log
+.DS_Store
+.env
+``` ````
+
+3) Comandos para preparar o repositório, instalar dependências e rodar localmente (execute no PowerShell ou cmd no diretório do projeto):
+````bash
+cd "C:\Users\Windows\Desktop\broniews do marcao"
+
+# instalar deps
+npm install
+
+# testar localmente
+node [server.js](http://_vscodecontentref_/1)
+# ou
+npm start
