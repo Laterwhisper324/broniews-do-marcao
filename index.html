@@ -424,6 +424,58 @@
             box-shadow: 0 8px 24px rgba(0,0,0,0.28);
         }
         .status.show { display: block; }
+
+        /* Sidebar (slide-in from right) */
+        .sidebar-overlay{
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.35);
+            display: none;
+            z-index: 180;
+            transition: opacity .18s ease;
+        }
+        .sidebar-overlay.show{ display:block; opacity:1; }
+
+        .sidebar-panel{
+            position: fixed;
+            top: 0;
+            right: 0;
+            height: 100%;
+            width: min(92%, 420px);
+            max-width: 420px;
+            background: var(--bg); /* uses same background mapping, adapts to theme */
+            box-shadow: -12px 0 40px rgba(9,30,66,0.18);
+            transform: translateX(110%);
+            transition: transform .28s cubic-bezier(.2,.9,.2,1);
+            z-index: 190;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .sidebar-panel.open{ transform: translateX(0); }
+
+        .sidebar-close{
+            margin-left: auto;
+            border: none;
+            background: transparent;
+            font-size: 20px;
+            width:36px;height:36px;border-radius:8px;cursor:pointer;color:var(--p-char);
+        }
+
+        .sidebar-header{ display:flex; align-items:center; gap:12px; }
+        .sidebar-title{ font-weight:700; font-size:18px; color:var(--p-char); }
+
+        .sidebar-nav{ display:flex; flex-direction:column; gap:8px; margin-top:8px; }
+        .sidebar-nav a, .sidebar-nav button{
+            display:flex; align-items:center; gap:10px;
+            padding:10px 12px; border-radius:10px; text-decoration:none;
+            background: var(--card); color: var(--p-char); border:1px solid rgba(0,0,0,0.04);
+        }
+
+        @media(min-width:900px){
+            .sidebar-panel{ width:420px; }
+        }
     </style>
 </head>
 <body>
@@ -432,7 +484,9 @@
             <div class="brand">
                 <div class="title">Brownies do Marcão</div>
                 <div class="subtitle">o melhor brownie da cidade</div>
-
+            </div>
+            <div class="top-controls">
+                <button class="btn" id="sidebar" aria-haspopup="true" aria-expanded="false" aria-controls="sidebarPanel">☰</button>
         </header>
 
         <main>
@@ -512,17 +566,42 @@
         </div>
     </div>
 
+    <!-- Sidebar overlay + panel (added) -->
+    <div id="sidebarOverlay" class="sidebar-overlay" aria-hidden="true"></div>
+
+    <aside id="sidebarPanel" class="sidebar-panel" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="sidebarTitle">
+        <div class="sidebar-header">
+            <div class="sidebar-title" id="sidebarTitle">Menu</div>
+            <button class="sidebar-close" id="sidebarClose" aria-label="Fechar menu">✕</button>
+        </div>
+
+        <nav class="sidebar-nav" aria-label="Navegação rápida">
+            <a href="index.html">Faça seu pedido</a>
+            <a href="carrinho.html">Carrinho</a>
+            <a href="chat.html">Contato</a>
+            <a href="#">Sobre</a>
+            <button id="logoutBtn" style="background:#fff;border:1px solid rgba(0,0,0,0.04)">Sair</button>
+        </nav>
+
+        <div style="margin-top:auto;font-size:13px;color:var(--muted)">
+            Atendimento: (11) 9xxxx-xxxx<br>
+            Horário: 10:00 — 20:00
+        </div>
+    </aside>
+
     <div class="fab" role="navigation" aria-label="Menu rápido">
         <span class="active-indicator" aria-hidden="true"></span>
         <a href="index.html" aria-label="Página inicial"><img src="casa.png" alt="Início"><span class="label">pedido</span></a>
         <a href="carrinho.html" aria-label="Carrinho"><img src="carrinho-carrinho.png" alt="Carrinho"><span class="label">Carrinho</span></a>
-        <a href="chat.html" aria-label="Chat"><img src="balao-de-fala.png" alt="Chat"><span class="label">Chat</span></a>
+        <a href="chat.html" aria-label="Chat"><img src="balao-de-fala.png" alt="Chat"><span class="label">Contato</span></a>
     </div>
 
     <!-- non-modal status area (used instead of alert/popups) -->
     <div id="status" class="status" role="status" aria-live="polite"></div>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    
     <script>
+        
         // helper UI status
         function showStatus(msg, ms = 3000) {
             const el = document.getElementById('status');
@@ -533,58 +612,6 @@
             el._t = setTimeout(() => el.classList.remove('show'), ms);
         }
 
-        // login panel handlers (unchanged logic)
-        (function loginPanelHandlers(){
-            const accountBtn = document.getElementById('accountBtn');
-            const overlay = document.getElementById('loginOverlay');
-            const closeBtn = document.getElementById('loginClose');
-            let lastFocus = null;
-
-            function openLogin(){
-                if(!overlay) return;
-                lastFocus = document.activeElement;
-                overlay.classList.add('show');
-                overlay.setAttribute('aria-hidden','false');
-                if(accountBtn) accountBtn.setAttribute('aria-expanded','true');
-                document.documentElement.style.overflow = 'hidden';
-                document.body.style.overflow = 'hidden';
-                setTimeout(()=> {
-                    const nameInput = document.getElementById('loginName') || document.getElementById('loginEmail');
-                    if(nameInput) nameInput.focus();
-                }, 60);
-            }
-
-            function closeLogin(){
-                if(!overlay) return;
-                overlay.classList.remove('show');
-                overlay.setAttribute('aria-hidden','true');
-                if(accountBtn) accountBtn.setAttribute('aria-expanded','false');
-                document.documentElement.style.overflow = '';
-                document.body.style.overflow = '';
-                if(lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
-            }
-
-            if(accountBtn){
-                accountBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    if(overlay && overlay.classList.contains('show')) closeLogin(); else openLogin();
-                });
-            }
-
-            if(closeBtn){
-                closeBtn.addEventListener('click', (e) => { e.preventDefault(); closeLogin(); });
-            }
-
-            if(overlay){
-                overlay.addEventListener('click', (e) => { if(e.target === overlay) closeLogin(); });
-                overlay.addEventListener('keydown', (e) => {
-                    if(e.key === 'Escape') closeLogin();
-                });
-            }
-
-            window.openLogin = openLogin;
-            window.closeLogin = closeLogin;
-        })();
 
         // FORM submission (async/await) — safe and fixed
         (function(){
@@ -681,6 +708,69 @@
             window.addEventListener('resize', ()=>{
                 const active = fab.querySelector('a.active') || links[0];
                 positionIndicator(active);
+            });
+        })();
+
+        // Sidebar open/close behavior
+        (function sidebarInit(){
+            const openBtn = document.getElementById('sidebar');
+            const panel = document.getElementById('sidebarPanel');
+            const overlay = document.getElementById('sidebarOverlay');
+            const closeBtn = document.getElementById('sidebarClose');
+
+            if(!openBtn || !panel || !overlay) return;
+
+            function openSidebar(){
+                panel.classList.add('open');
+                overlay.classList.add('show');
+                panel.setAttribute('aria-hidden','false');
+                overlay.setAttribute('aria-hidden','false');
+                openBtn.setAttribute('aria-expanded','true');
+                // save last focused and focus first focusable in panel
+                panel._lastFocus = document.activeElement;
+                const f = panel.querySelector('a,button,[tabindex]:not([tabindex="-1"])');
+                if(f) setTimeout(()=> f.focus(), 80);
+                // prevent body scroll
+                document.documentElement.style.overflow = 'hidden';
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeSidebar(){
+                panel.classList.remove('open');
+                overlay.classList.remove('show');
+                panel.setAttribute('aria-hidden','true');
+                overlay.setAttribute('aria-hidden','true');
+                openBtn.setAttribute('aria-expanded','false');
+                // restore focus
+                if(panel._lastFocus && typeof panel._lastFocus.focus === 'function') panel._lastFocus.focus();
+                document.documentElement.style.overflow = '';
+                document.body.style.overflow = '';
+            }
+
+            openBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                if(panel.classList.contains('open')) closeSidebar(); else openSidebar();
+            });
+            closeBtn && closeBtn.addEventListener('click', (e) => { e.preventDefault(); closeSidebar(); });
+            overlay.addEventListener('click', (e) => { if(e.target === overlay) closeSidebar(); });
+
+            // ESC to close
+            document.addEventListener('keydown', (e) => {
+                if(e.key === 'Escape' && panel.classList.contains('open')) closeSidebar();
+            });
+
+            // simple focus trap
+            panel.addEventListener('keydown', (e) => {
+                if(e.key !== 'Tab') return;
+                const focusable = Array.from(panel.querySelectorAll('a[href], button:not([disabled]), input, [tabindex]:not([tabindex="-1"])'));
+                if(!focusable.length) return;
+                const first = focusable[0];
+                const last = focusable[focusable.length -1];
+                if(e.shiftKey && document.activeElement === first){
+                    e.preventDefault(); last.focus();
+                } else if(!e.shiftKey && document.activeElement === last){
+                    e.preventDefault(); first.focus();
+                }
             });
         })();
     </script>

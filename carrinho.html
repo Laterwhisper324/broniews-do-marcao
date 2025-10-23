@@ -112,7 +112,7 @@
         <span class="active-indicator" aria-hidden="true"></span>
         <a href="index.html" aria-label="Página inicial"><img src="casa.png" alt="Início"><span class="label">pedido</span></a>
         <a href="carrinho.html" aria-label="Carrinho"><img src="carrinho-carrinho.png" alt="Carrinho"><span class="label">Carrinho</span></a>
-        <a href="chat.html" aria-label="Chat"><img src="balao-de-fala.png" alt="Chat"><span class="label">Chat</span></a>
+        <a href="chat.html" aria-label="Chat"><img src="balao-de-fala.png" alt="Chat"><span class="label">Contato</span></a>
     </div>
 
 <script>
@@ -222,10 +222,45 @@
     setQty(0);
   });
 
-  checkoutBtn.addEventListener('click', ()=> {
+  checkoutBtn.addEventListener('click', async ()=> {
     if(cartQty <= 0) { alert('Carrinho vazio'); return; }
     const c = calcTotal(cartQty);
-    alert(`Total a pagar: ${fmt(c.total)}\n( ${cartQty} itens — ${c.pairs} pares, ${c.rem} avulsos )`);
+
+    // opcional: pedir nome/email do cliente (pode deixar em branco)
+    const name = prompt('Nome para o pedido (opcional):', '') || '';
+    const email = prompt('E‑mail para contato (opcional):', '') || '';
+
+    const order = {
+      items: [
+        { product: 'Brownie Tradicional', qty: cartQty, unit_price: UNIT }
+      ],
+      total: Number(c.total),
+      customer: { name, email }
+    };
+
+    try {
+      // envia para o servidor local que grava pedidos.sql
+      const resp = await fetch('http://localhost:3000/pedido', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(order)
+      });
+
+      const data = await resp.json().catch(()=>null);
+      if (resp.ok && data && data.ok) {
+        // sucesso: limpa carrinho e mostra mensagem
+        setQty(0);
+        // usa showStatus definido no index.html (se existir)
+        if (typeof showStatus === 'function') showStatus('Pedido registrado em pedidos.sql', 4000);
+        else alert('Pedido registrado em pedidos.sql');
+      } else {
+        console.error('Erro ao enviar pedido:', resp.status, data);
+        alert('Erro ao registrar pedido.');
+      }
+    } catch (err) {
+      console.error('Erro rede:', err);
+      alert('Erro de comunicação com o servidor.');
+    }
   });
 
   // initial render
