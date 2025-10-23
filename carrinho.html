@@ -226,7 +226,6 @@
     if(cartQty <= 0) { alert('Carrinho vazio'); return; }
     const c = calcTotal(cartQty);
 
-    // opcional: pedir nome/email do cliente (pode deixar em branco)
     const name = prompt('Nome para o pedido (opcional):', '') || '';
     const email = prompt('E‑mail para contato (opcional):', '') || '';
 
@@ -239,8 +238,7 @@
     };
 
     try {
-      // envia para o servidor local que grava pedidos.sql
-      const resp = await fetch('http://localhost:3000/pedido', {
+      const resp = await fetch('/pedido', { // << caminho relativo
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(order)
@@ -248,11 +246,8 @@
 
       const data = await resp.json().catch(()=>null);
       if (resp.ok && data && data.ok) {
-        // sucesso: limpa carrinho e mostra mensagem
         setQty(0);
-        // usa showStatus definido no index.html (se existir)
-        if (typeof showStatus === 'function') showStatus('Pedido registrado em pedidos.sql', 4000);
-        else alert('Pedido registrado em pedidos.sql');
+        showStatus && showStatus('Pedido registrado.', 4000);
       } else {
         console.error('Erro ao enviar pedido:', resp.status, data);
         alert('Erro ao registrar pedido.');

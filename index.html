@@ -613,12 +613,10 @@
         }
 
 
-        // FORM submission (async/await) — safe and fixed
+        // FORM submission (async/await) — usa caminho relativo para funcionar em produção
         (function(){
           const form = document.getElementById('loginForm');
           if (!form) return;
-
-          function escDouble(s){ return String(s).replace(/"/g,'\\"'); }
 
           form.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -631,7 +629,7 @@
             }
 
             try {
-              const resp = await fetch('http://localhost:3000/cadastro', {
+              const resp = await fetch('/cadastro', { // << caminho relativo
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name, email, password: pass })
@@ -647,7 +645,7 @@
                   document.documentElement.style.overflow = '';
                   document.body.style.overflow = '';
                 }
-                showStatus('Cadastro salvo localmente.', 3000);
+                showStatus('Cadastro salvo.', 3000);
               } else {
                 console.error('Erro resposta:', resp.status, data);
                 showStatus('Erro ao salvar cadastro.', 3000);
