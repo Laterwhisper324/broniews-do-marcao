@@ -1,12 +1,25 @@
 {
   "name": "broniews-do-marcao",
   "version": "1.0.0",
-  "private": true,
+  "main": "server.js",
   "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Laterwhisper324/broniews-do-marcao.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Laterwhisper324/broniews-do-marcao/issues"
+  },
+  "homepage": "https://github.com/Laterwhisper324/broniews-do-marcao#readme",
+  "description": "",
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^4.18.2"
+    "express": "^5.1.0"
   }
 }
