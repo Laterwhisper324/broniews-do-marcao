@@ -1,3 +1,4 @@
 INSERT INTO pedidos (customer_name, customer_email, items_json, total, created_at) VALUES ("habsdya","dahbdyhaw","[{\"product\":\"Brownie Tradicional\",\"qty\":2,\"unit_price\":7.5}]", 13.00, "2025-10-23T02:01:08.499Z");
 INSERT INTO pedidos (customer_name, customer_email, items_json, total, created_at) VALUES ("marco","sama@gmail","[{\"product\":\"Brownie Tradicional\",\"qty\":2,\"unit_price\":7.5}]", 13.00, "2025-10-23T02:01:38.354Z");
 INSERT INTO pedidos (customer_name, customer_email, items_json, total, created_at) VALUES ("dwda","dawda","[{\"product\":\"Brownie Tradicional\",\"qty\":2,\"unit_price\":7.5}]", 13.00, "2025-10-23T02:04:14.837Z");
+INSERT INTO pedidos (customer_name, customer_email, items_json, total, created_at) VALUES ("adwad","grdgd","[{\"product\":\"Brownie Tradicional\",\"qty\":2,\"unit_price\":7.5}]", 13.00, "2025-10-23T21:10:25.354Z");
